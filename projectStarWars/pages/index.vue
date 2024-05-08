@@ -9,11 +9,22 @@
         <img class="capaImg" src="../assets/capa.png">
     </div>
     <div >
-        <div>
-            <img class="fundoImg" src="../assets/fundo.png">
-            <div class="api">
-                <H1 class="apitext">API</H1>
-            </div>
+            <div>
+                <img class="fundoImg" src="../assets/fundo.png">
+                <div class="api">
+        <h1 class="apitext">API</h1>
+        <h2 class="trip-details">Trip Details of ID: {{ $route.params.id }}</h2>
+        <div class="details" v-if="peopleFound">
+            <p><strong>Nome:</strong> {{ peopleFound.name }}</p>
+            <p><strong>Height:</strong> {{ peopleFound.height }}</p>
+        </div>
+        <div class="character-search">
+            <h3>Do you want another character?</h3>
+            <label for="character-id">Character ID:</label>
+            <input id="character-id" v-model="character" type="number">
+            <button @click="getCharacter">Find</button>
+        </div>
+    </div>
             <button class="get">GET</button>
             <button class="post">POST</button>
             <button class="put">PUT</button>
@@ -22,6 +33,23 @@
         
     </div>
 </template>
+
+<script setup>
+    const route = useRoute();
+    console.log("route", route);
+
+    const { data: peopleFound, error } = await useFetch(`https://swapi.dev/api/people/${route.params.id}`);
+
+    let character;
+
+    const getCharacter = () => console.log("Character Chosen: ", character);
+
+    if (error) {
+        console.error("Error fetching data:", error);
+        // Handle error gracefully, e.g., show a message to the user
+    }
+</script>
+
 
 <style scoped>
     
@@ -71,20 +99,67 @@
         background-color: black;
         
     }
-    .api{
+    .api {
         height: 500px;
         width: 650px;
-        background-color: rgb(50, 50, 46, 0.85);
+        background-color: rgba(50, 50, 46, 0.85);
         position: absolute;
         z-index: 5;
-        margin-top: 650px;
-        margin-left: 600px;
+        top: 650px;
+        left: 600px;
         border-radius: 30px;
+        padding: 20px;
+        color: white;
     }
-    .apitext{
-        margin-left: 45%;
-        margin-top: 10%;
-        font-style:initial;
+
+    .apitext {
+        text-align: center;
+        font-size: 30px;
+        margin-bottom: 20px;
+        
+    }
+
+    .trip-details {
+        font-size: 24px;
+        margin-bottom: 20px;
+        background-color: rgba(50, 50, 46, 0.85);
+    }
+
+    .details p {
+        margin-bottom: 10px;
+        background-color: rgba(50, 50, 46, 0.85);
+    }
+
+    .character-search {
+        margin-top: 20px;
+        background-color: rgba(50, 50, 46, 0.85);
+    }
+
+    .character-search h3 {
+        margin-bottom: 10px;
+        background-color: rgba(50, 50, 46, 0.85);
+    }
+
+    .character-search label {
+        margin-right: 10px;
+        background-color: rgba(50, 50, 46, 0.85);
+    }
+
+    .character-search input {
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-right: 10px;
+        background-color: rgba(50, 50, 46, 0.85);
+    }
+
+    .character-search button {
+        padding: 5px 10px;
+        border-radius: 5px;
+        background-color: rgb(252, 192, 0);
+        color: white;
+        border: none;
+        cursor: pointer;
     }
     button{
         position: absolute;
