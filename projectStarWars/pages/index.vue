@@ -14,15 +14,18 @@
                 <div class="api">
         <h1 class="apitext">API</h1>
         <h2 class="trip-details">Trip Details of ID: {{ $route.params.id }}</h2>
-        <div class="details" v-if="peopleFound">
-            <p><strong>Nome:</strong> {{ peopleFound.name }}</p>
-            <p><strong>Height:</strong> {{ peopleFound.height }}</p>
+        <div class="details" v-if="Object.keys(characters).length">
+            <p><strong>Nome:</strong> {{ characters.name }}</p>
+            <p><strong>Height:</strong> {{ characters.height }}</p>
         </div>
         <div class="character-search">
             <h3>Do you want another character?</h3>
             <label for="character-id">Character ID:</label>
             <input id="character-id" v-model="character" type="number">
-            <button @click="getCharacter">Find</button>
+            <button v-on:click="getCharacter">Find</button>
+        </div>
+        <div v-if="Object.keys(characters).length">
+            <p>Vai se fuder {{ characters }}</p>
         </div>
     </div>
             <button class="get">GET</button>
@@ -37,17 +40,14 @@
 <script setup>
     const route = useRoute();
     console.log("route", route);
-
-    const { data: peopleFound, error } = await useFetch(`https://swapi.dev/api/people/${route.params.id}`);
-
-    let character;
-
-    const getCharacter = () => console.log("Character Chosen: ", character);
-
-    if (error) {
-        console.error("Error fetching data:", error);
-        // Handle error gracefully, e.g., show a message to the user
+    const character = ref('');
+    const characters = ref({});
+    
+    const getCharacter = async () => {
+        const { data: peopleFound} = await useFetch(`https://swapi.dev/api/people/${character.value}`);
+        characters.value = peopleFound._value;
     }
+
 </script>
 
 
@@ -126,6 +126,7 @@
     }
 
     .details p {
+        z-index: 2;
         margin-bottom: 10px;
         background-color: rgba(50, 50, 46, 0.85);
     }
